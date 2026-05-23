@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ Приключение принцессы</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     ЭКРАН 1: ВЫБОР ПЕРСОНАЖА
+     ═══════════════════════════════════ -->
+<div id="screen-select" class="screen active">
+  <div class="stars-bg" id="stars-bg"></div>
+
+  <div class="select-container">
+    <h1 class="game-title">
+      <span class="title-line">✨ Приключение</span>
+      <span class="title-line">принцессы ✨</span>
+    </h1>
+    <p class="select-hint">Выбери своего персонажа!</p>
+
+    <div class="char-grid">
+
+      <div class="char-card" data-char="1" onclick="selectChar(1)">
+        <div class="char-sprite-wrap" id="sprite-wrap-1"></div>
+        <div class="char-info">
+          <div class="char-name">Аня</div>
+          <div class="char-trait">Мечтательница</div>
+        </div>
+      </div>
+
+      <div class="char-card" data-char="2" onclick="selectChar(2)">
+        <div class="char-sprite-wrap" id="sprite-wrap-2"></div>
+        <div class="char-info">
+          <div class="char-name">Маша</div>
+          <div class="char-trait">Волшебница</div>
+        </div>
+      </div>
+
+      <div class="char-card" data-char="3" onclick="selectChar(3)">
+        <div class="char-sprite-wrap" id="sprite-wrap-3"></div>
+        <div class="char-info">
+          <div class="char-name">Соня</div>
+          <div class="char-trait">Принцесса</div>
+        </div>
+      </div>
+
+    </div>
+
+    <button id="btn-start" class="pixel-btn" onclick="startGame()" disabled>
+      ▶ Начать!
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     ЭКРАН 2: ИГРОВОЕ ПОЛЕ
+     ═══════════════════════════════════ -->
+<div id="screen-board" class="screen">
+
+  <!-- Шапка с именем и этапами -->
+  <div class="board-header">
+    <div class="header-player">
+      <div id="header-sprite-wrap" class="header-sprite"></div>
+      <span id="header-name">Аня</span>
+    </div>
+    <div class="header-stage">Этап <span id="stage-display">0</span>/3</div>
+  </div>
+
+  <!-- Игровое поле -->
+  <div class="board-wrapper">
+    <div class="board-container" id="board-container">
+
+      <!-- SVG-путь (рисуется в JS) -->
+      <svg class="path-svg" id="path-svg"
+           viewBox="0 0 600 350"
+           xmlns="http://www.w3.org/2000/svg"
+           preserveAspectRatio="none">
+      </svg>
+
+      <!-- Декоративные элементы -->
+      <div class="deco" style="left:15%;top:34%">🌸</div>
+      <div class="deco" style="left:50%;top:34%">🌿</div>
+      <div class="deco" style="left:85%;top:34%">🌸</div>
+      <div class="deco" style="left:15%;top:67%">🌿</div>
+      <div class="deco" style="left:50%;top:67%">🌸</div>
+      <div class="deco" style="left:85%;top:67%">🌿</div>
+
+      <!-- Клетки поля -->
+      <div id="cells-container"></div>
+
+      <!-- Фишка игрока -->
+      <div id="player-token" class="player-token">
+        <div id="player-token-sprite"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Панель кубика -->
+  <div class="dice-panel">
+    <div class="dice" id="dice">
+      <span id="dice-face">?</span>
+    </div>
+    <p id="dice-msg" class="dice-msg">Брось кубик!</p>
+    <button id="btn-roll" class="pixel-btn" onclick="rollDice()">
+      🎲 Бросить
+    </button>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     ОВЕРЛЕЙ: ЭТАП 1 — Вопрос + Бабочки
+     ═══════════════════════════════════ -->
+<div id="overlay-s1" class="overlay hidden">
+  <div class="modal-box">
+
+    <!-- Фаза A: Вопрос -->
+    <div id="s1-question" class="modal-phase">
+      <div class="modal-star">⭐ Этап 1 ⭐</div>
+      <p class="modal-text">Мама — это...</p>
+      <div class="answers">
+        <button class="answer-btn" onclick="pickAnswer(this)">Самый лучший человек в мире! ❤️</button>
+        <button class="answer-btn" onclick="pickAnswer(this)">Моя любимая мама! 🌸</button>
+        <button class="answer-btn" onclick="pickAnswer(this)">Самая красивая! 💫</button>
+      </div>
+    </div>
+
+    <!-- Фаза B: Ловим бабочек -->
+    <div id="s1-butterflies" class="modal-phase hidden">
+      <div class="modal-star">🦋 Лови бабочек! 🦋</div>
+      <div class="butterfly-hud">
+        Поймано: <span id="caught">0</span>&nbsp;/&nbsp;<span id="btotal">8</span>
+      </div>
+      <div class="butterfly-field" id="bfield"></div>
+      <div class="butterfly-win hidden" id="bwin">
+        <p>🎉 Все пойманы! Молодец! 🎉</p>
+        <button class="pixel-btn small-btn" onclick="finishStage1()">Дальше! ▶</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     ОВЕРЛЕЙ: ЭТАП 2 (заглушка)
+     ═══════════════════════════════════ -->
+<div id="overlay-s2" class="overlay hidden">
+  <div class="modal-box">
+    <div class="modal-phase">
+      <div class="modal-star">⭐ Этап 2 ⭐</div>
+      <p class="modal-text" id="s2-text">Здесь будет<br>твой сюрприз! 🎁</p>
+      <button class="pixel-btn" onclick="finishStage2()">Продолжить ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     ОВЕРЛЕЙ: ФИНИШ / ПОБЕДА
+     ═══════════════════════════════════ -->
+<div id="overlay-win" class="overlay hidden">
+  <div class="modal-box win-modal">
+    <div class="win-hearts">💕 💕 💕</div>
+    <h2 class="win-title">Ты лучшая!</h2>
+    <div id="win-sprite-wrap" class="win-sprite"></div>
+    <p class="win-text">Ты прошла все испытания!<br>С любовью ❤️</p>
+    <button class="pixel-btn" onclick="resetGame()">Играть снова?</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

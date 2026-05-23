@@ -1,0 +1,597 @@
+/* ══════════════════════════════════════════
+   PIXEL PRINCESS ADVENTURE — styles.css
+   Stardew Valley pixel minimalism
+   Палитра: бирюзовый + оливковый на тёплом кремовом
+   ══════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* ─── CSS ПЕРЕМЕННЫЕ ─────────────────────── */
+:root {
+  --teal:      #3CC9C0;
+  --teal-d:    #28A9A0;
+  --teal-ll:   #B8EEE9;
+  --olive:     #7A8C3E;
+  --olive-d:   #556030;
+  --olive-l:   #A3B856;
+  --cream:     #FFF3D6;
+  --warm:      #FFFBE8;
+  --brown:     #8B5E3C;
+  --dark:      #3D2B1F;
+  --gold:      #FFD166;
+  --pink:      #FF8FAB;
+  --cell-size: min(48px, 8vw);
+}
+
+/* ─── СБРОС ──────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--cream);
+  font-family: 'Press Start 2P', monospace;
+  color: var(--dark);
+}
+
+/* ─── ЭКРАНЫ ─────────────────────────────── */
+.screen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+.screen.active { display: flex; }
+
+/* ══════════════════════════════════════════
+   ЭКРАН 1 — ВЫБОР ПЕРСОНАЖА
+   ══════════════════════════════════════════ */
+#screen-select {
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 60% 45% at 15% 15%, rgba(60,201,192,.20) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 40% at 85% 85%, rgba(163,184,86,.17) 0%, transparent 60%),
+    var(--cream);
+}
+
+/* Плавающие звёзды на фоне */
+.stars-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--gold);
+  animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s);
+}
+@keyframes twinkle {
+  0%, 100% { opacity: .15; transform: scale(.6); }
+  50%       { opacity: 1;   transform: scale(1.4); }
+}
+
+.select-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 16px;
+  width: 100%;
+  max-width: 700px;
+}
+
+/* Заголовок */
+.game-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.title-line {
+  font-size: clamp(11px, 2.6vw, 20px);
+  color: var(--teal-d);
+  text-shadow: 3px 3px 0 var(--olive-d);
+  animation: title-float 3s ease-in-out infinite;
+}
+.title-line:nth-child(2) { animation-delay: .35s; }
+
+@keyframes title-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.select-hint {
+  font-size: clamp(6px, 1.3vw, 8px);
+  color: var(--brown);
+}
+
+/* Сетка персонажей */
+.char-grid {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.char-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 12px 12px;
+  border: 4px solid var(--olive);
+  background: var(--warm);
+  cursor: pointer;
+  min-width: 115px;
+  transition: transform .15s ease, border-color .15s, background .15s, box-shadow .15s;
+  user-select: none;
+}
+.char-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--teal);
+  background: var(--teal-ll);
+}
+.char-card.selected {
+  border-color: var(--gold);
+  background: #FFF8D6;
+  transform: translateY(-6px);
+  box-shadow: 4px 4px 0 var(--gold);
+}
+
+.char-sprite-wrap {
+  width: 60px;
+  height: 90px;
+  image-rendering: pixelated;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.char-sprite-wrap canvas { image-rendering: pixelated; }
+
+.char-info   { text-align: center; }
+.char-name   { font-size: 8px;   color: var(--dark);  margin-bottom: 5px; }
+.char-trait  { font-size: 5.5px; color: var(--brown); line-height: 1.9; }
+
+/* ─── ПИКСЕЛЬНАЯ КНОПКА ──────────────────── */
+.pixel-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(7px, 1.4vw, 9px);
+  padding: 12px 22px;
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  border-bottom: 4px solid var(--teal-d);
+  border-right:  4px solid var(--teal-d);
+  cursor: pointer;
+  transition: transform .1s, box-shadow .1s;
+  line-height: 1.6;
+  white-space: nowrap;
+  text-align: center;
+}
+.pixel-btn:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--teal-d);
+}
+.pixel-btn:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  border-bottom-width: 2px;
+  border-right-width:  2px;
+}
+.pixel-btn:disabled {
+  background: #bbb;
+  border-color: #888;
+  color: #777;
+  cursor: not-allowed;
+}
+.small-btn {
+  font-size: 7px;
+  padding: 9px 16px;
+}
+
+/* ══════════════════════════════════════════
+   ЭКРАН 2 — ИГРОВОЕ ПОЛЕ
+   ══════════════════════════════════════════ */
+#screen-board {
+  background:
+    repeating-linear-gradient(0deg,   transparent, transparent 39px, rgba(0,0,0,.022) 39px, rgba(0,0,0,.022) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,0,0,.022) 39px, rgba(0,0,0,.022) 40px),
+    var(--cream);
+  justify-content: flex-start;
+}
+
+/* Верхняя строка */
+.board-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background: var(--olive-d);
+  border-bottom: 4px solid var(--dark);
+  color: var(--cream);
+  font-size: 7px;
+  flex-shrink: 0;
+  z-index: 5;
+}
+.header-player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.header-sprite {
+  width: 24px;
+  height: 36px;
+  image-rendering: pixelated;
+  display: flex;
+  align-items: center;
+}
+.header-sprite canvas { image-rendering: pixelated; }
+
+/* Обёртка поля */
+.board-wrapper {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Контейнер поля с соотношением сторон */
+.board-container {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  aspect-ratio: 12 / 7;           /* соответствует viewBox 600×350 */
+  max-height: calc(100dvh - 130px);
+  flex-shrink: 1;
+}
+
+/* SVG-путь поверх поля */
+.path-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Декоративные элементы */
+.deco {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: clamp(10px, 2vw, 18px);
+  pointer-events: none;
+  z-index: 1;
+  opacity: .65;
+}
+
+/* Клетки поля */
+#cells-container {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.cell {
+  position: absolute;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  transform: translate(-50%, -50%);
+  border: 3px solid var(--olive);
+  background: var(--warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(6px, 1.3vw, 11px);
+  z-index: 2;
+  image-rendering: pixelated;
+  transition: background .25s;
+}
+.cell.cell-start   { background: var(--teal-ll); border-color: var(--teal-d); }
+.cell.cell-stage   {
+  background: var(--gold);
+  border-color: var(--brown);
+  border-width: 4px;
+  z-index: 3;
+  animation: cell-pulse 1.6s ease-in-out infinite;
+}
+.cell.cell-visited { background: #e4f5e0; }
+
+@keyframes cell-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,209,102,.75); }
+  55%       { box-shadow: 0 0 0 7px rgba(255,209,102,0); }
+}
+
+/* Фишка игрока */
+.player-token {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  z-index: 10;
+  transition:
+    left  .45s cubic-bezier(.34, 1.56, .64, 1),
+    top   .45s cubic-bezier(.34, 1.56, .64, 1);
+}
+.player-token canvas { image-rendering: pixelated; display: block; }
+
+.player-token.hop {
+  animation: hop .38s ease-out;
+}
+@keyframes hop {
+  0%   { transform: translate(-50%, -100%) scale(1); }
+  40%  { transform: translate(-50%, -125%) scale(1.06); }
+  100% { transform: translate(-50%, -100%) scale(1); }
+}
+
+/* ─── Панель кубика ──────────────────────── */
+.dice-panel {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--olive);
+  border-top: 4px solid var(--dark);
+  flex-shrink: 0;
+}
+
+.dice {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  background: var(--warm);
+  border: 3px solid var(--dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-family: monospace;
+  font-weight: bold;
+  color: var(--dark);
+  transition: transform .1s;
+}
+.dice.rolling {
+  animation: dice-shake .07s ease-in-out infinite;
+}
+@keyframes dice-shake {
+  0%, 100% { transform: rotate(-9deg) scale(.93); }
+  50%       { transform: rotate(9deg)  scale(1.07); }
+}
+
+.dice-msg {
+  flex: 1;
+  font-size: clamp(5.5px, 1.2vw, 8px);
+  color: var(--cream);
+  line-height: 1.9;
+  word-break: break-word;
+}
+
+/* ══════════════════════════════════════════
+   ОВЕРЛЕИ / МОДАЛКИ
+   ══════════════════════════════════════════ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(61, 43, 31, .82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+  backdrop-filter: blur(2px);
+}
+.overlay.hidden { display: none; }
+
+.modal-box {
+  background: var(--cream);
+  border: 4px solid var(--olive);
+  box-shadow: 6px 6px 0 var(--dark);
+  padding: 24px 20px;
+  width: 100%;
+  max-width: 460px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: modal-pop .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+@keyframes modal-pop {
+  from { transform: scale(.78); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.modal-phase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+.modal-phase.hidden { display: none; }
+
+.modal-star {
+  font-size: clamp(9px, 2vw, 12px);
+  color: var(--teal-d);
+  border-bottom: 3px solid var(--olive);
+  padding-bottom: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.modal-text {
+  font-size: clamp(8px, 1.8vw, 11px);
+  text-align: center;
+  color: var(--dark);
+  line-height: 2.4;
+}
+
+/* Кнопки-ответы */
+.answers {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+}
+.answer-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(6px, 1.2vw, 7px);
+  padding: 12px 10px;
+  background: var(--warm);
+  border: 3px solid var(--olive);
+  color: var(--dark);
+  cursor: pointer;
+  line-height: 2.1;
+  text-align: center;
+  transition: transform .1s, background .15s, border-color .15s;
+}
+.answer-btn:hover:not(:disabled) {
+  background: var(--teal-ll);
+  border-color: var(--teal-d);
+  transform: scale(1.02);
+}
+.answer-btn.picked {
+  background: var(--olive-l);
+  color: #fff;
+  border-color: var(--olive-d);
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════
+   МИНИ-ИГРА: БАБОЧКИ
+   ══════════════════════════════════════════ */
+.butterfly-hud {
+  font-size: 7px;
+  color: var(--brown);
+  background: var(--warm);
+  border: 2px solid var(--olive);
+  padding: 7px 16px;
+}
+
+.butterfly-field {
+  position: relative;
+  width: 100%;
+  height: 210px;
+  background: linear-gradient(to bottom, #d4eef7 0%, #c5edba 100%);
+  border: 3px solid var(--olive);
+  overflow: hidden;
+}
+
+/* Бабочка */
+.butterfly {
+  position: absolute;
+  font-size: 30px;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1;
+  z-index: 2;
+  animation: fly var(--dur, 4s) ease-in-out infinite var(--dly, 0s);
+  transition: transform .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.butterfly:hover  { transform: scale(1.3); }
+.butterfly:active { transform: scale(1.5); }
+
+@keyframes fly {
+  0%   { transform: translate(0,    0)    rotate(-5deg); }
+  20%  { transform: translate(14px, -20px) rotate(7deg); }
+  40%  { transform: translate(-9px, -13px) rotate(-4deg); }
+  60%  { transform: translate(19px, -24px) rotate(9deg); }
+  80%  { transform: translate(-6px, -9px)  rotate(-3deg); }
+  100% { transform: translate(0,    0)    rotate(-5deg); }
+}
+
+.butterfly.caught {
+  animation: catch-pop .35s ease-out forwards !important;
+  pointer-events: none;
+}
+@keyframes catch-pop {
+  0%   { transform: scale(1)   rotate(0deg);   opacity: 1; }
+  50%  { transform: scale(1.9) rotate(20deg);  opacity: .5; }
+  100% { transform: scale(0)   rotate(-25deg); opacity: 0; }
+}
+
+.butterfly-win {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 8px;
+  color: var(--teal-d);
+  text-align: center;
+  line-height: 2.5;
+}
+.butterfly-win.hidden { display: none; }
+
+/* ══════════════════════════════════════════
+   ЭКРАН ПОБЕДЫ
+   ══════════════════════════════════════════ */
+.win-modal {
+  text-align: center;
+  gap: 18px;
+}
+.win-hearts {
+  font-size: 34px;
+  letter-spacing: 6px;
+  animation: title-float 2s ease-in-out infinite;
+}
+.win-title {
+  font-size: clamp(14px, 3.5vw, 22px);
+  color: var(--teal-d);
+  text-shadow: 3px 3px 0 var(--olive);
+}
+.win-sprite {
+  image-rendering: pixelated;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.win-sprite canvas { image-rendering: pixelated; }
+.win-text {
+  font-size: clamp(7px, 1.5vw, 9px);
+  color: var(--dark);
+  line-height: 3;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════
+   АДАПТИВ
+   ══════════════════════════════════════════ */
+@media (max-width: 420px) {
+  .char-grid  { gap: 10px; }
+  .char-card  { min-width: 88px; padding: 10px 8px; }
+  .char-name  { font-size: 7px; }
+  .char-trait { font-size: 5px; }
+  .char-sprite-wrap { width: 54px; height: 81px; }
+
+  :root { --cell-size: min(38px, 10vw); }
+
+  .dice-panel { gap: 8px; padding: 8px 10px; }
+  .dice       { width: 40px; height: 40px; font-size: 17px; }
+
+  .modal-box  { padding: 16px 13px; }
+  .butterfly-field { height: 175px; }
+  .butterfly  { font-size: 26px; }
+}
+
+@media (max-height: 580px) and (orientation: landscape) {
+  .board-container { aspect-ratio: 7 / 3; }
+  :root { --cell-size: min(36px, 5vh); }
+  .butterfly-field { height: 145px; }
+}
