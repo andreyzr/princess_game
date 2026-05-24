@@ -445,3 +445,33 @@ html, body { width: 100%; height: 100%; overflow: hidden;
   .catch-field { height:140px; }
   .fly-obj { font-size:22px; }
 }
+
+/* ══ ДОПОЛНЕНИЯ: экран выбора напарницы ══ */
+.daught-canvas { width:54px; height:84px; }
+
+.nav-row {
+  display: flex; gap: 14px; align-items: center;
+}
+.pixel-btn.grey {
+  background: #8B9A6E;
+  border-color: #6A7A50;
+}
+.pixel-btn.grey:hover:not(:disabled) {
+  box-shadow: 4px 4px 0 #6A7A50;
+}
+
+/* Заголовок с двумя иконками */
+.header-char-d {
+  image-rendering: pixelated;
+  width: 24px; height: 37px;
+}
+.hdr-sep { opacity:.4; }
+
+/* Два спрайта на финальном экране */
+.win-duo {
+  display: flex; gap: 16px; align-items: flex-end; justify-content: center;
+}
+.modal-txt {
+  font-size: clamp(7px,1.5vw,9px); text-align:center;
+  color:var(--dark); line-height:2.4;
+}
