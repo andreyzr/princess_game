@@ -4,172 +4,202 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>✨ Приключение принцессы</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- ═══════════════════════════════════
-     ЭКРАН 1: ВЫБОР ПЕРСОНАЖА
-     ═══════════════════════════════════ -->
+<!-- ══════════ ЭКРАН 1: ВЫБОР ПЕРСОНАЖА ══════════ -->
 <div id="screen-select" class="screen active">
-  <div class="stars-bg" id="stars-bg"></div>
-
-  <div class="select-container">
-    <h1 class="game-title">
-      <span class="title-line">✨ Приключение</span>
-      <span class="title-line">принцессы ✨</span>
-    </h1>
-    <p class="select-hint">Выбери своего персонажа!</p>
+  <div id="stars-bg" class="stars-bg"></div>
+  <div class="select-wrap">
+    <h1 class="game-title"><span>✨ Выбери</span><span>персонажа ✨</span></h1>
+    <p class="select-hint">Кем ты хочешь быть сегодня?</p>
 
     <div class="char-grid">
-
       <div class="char-card" data-char="1" onclick="selectChar(1)">
-        <div class="char-sprite-wrap" id="sprite-wrap-1"></div>
-        <div class="char-info">
-          <div class="char-name">Аня</div>
-          <div class="char-trait">Мечтательница</div>
-        </div>
+        <canvas class="char-canvas" id="cv-1" width="60" height="90"></canvas>
+        <div class="char-name">Повседневная</div>
+        <div class="char-desc">Уютная & лёгкая</div>
       </div>
-
       <div class="char-card" data-char="2" onclick="selectChar(2)">
-        <div class="char-sprite-wrap" id="sprite-wrap-2"></div>
-        <div class="char-info">
-          <div class="char-name">Маша</div>
-          <div class="char-trait">Волшебница</div>
-        </div>
+        <canvas class="char-canvas" id="cv-2" width="60" height="90"></canvas>
+        <div class="char-name">Путешественница</div>
+        <div class="char-desc">Готова к приключениям</div>
       </div>
-
       <div class="char-card" data-char="3" onclick="selectChar(3)">
-        <div class="char-sprite-wrap" id="sprite-wrap-3"></div>
-        <div class="char-info">
-          <div class="char-name">Соня</div>
-          <div class="char-trait">Принцесса</div>
-        </div>
+        <canvas class="char-canvas" id="cv-3" width="60" height="90"></canvas>
+        <div class="char-name">Элегантная</div>
+        <div class="char-desc">Стильная & загадочная</div>
       </div>
-
     </div>
 
     <button id="btn-start" class="pixel-btn" onclick="startGame()" disabled>
-      ▶ Начать!
+      ▶ Начать приключение!
     </button>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════
-     ЭКРАН 2: ИГРОВОЕ ПОЛЕ
-     ═══════════════════════════════════ -->
+<!-- ══════════ ЭКРАН 2: ИЗОМЕТРИЧЕСКОЕ ПОЛЕ ══════════ -->
 <div id="screen-board" class="screen">
-
-  <!-- Шапка с именем и этапами -->
   <div class="board-header">
-    <div class="header-player">
-      <div id="header-sprite-wrap" class="header-sprite"></div>
-      <span id="header-name">Аня</span>
-    </div>
-    <div class="header-stage">Этап <span id="stage-display">0</span>/3</div>
+    <canvas id="cv-header" width="30" height="45" class="header-char"></canvas>
+    <span id="header-name-lbl">Имя</span>
+    <span class="header-sep">|</span>
+    <span>Этапов: <span id="stages-done">0</span>/4</span>
   </div>
 
-  <!-- Игровое поле -->
   <div class="board-wrapper">
-    <div class="board-container" id="board-container">
+    <!-- Изометрический холст -->
+    <canvas id="board-canvas" width="620" height="350"></canvas>
 
-      <!-- SVG-путь (рисуется в JS) -->
-      <svg class="path-svg" id="path-svg"
-           viewBox="0 0 600 350"
-           xmlns="http://www.w3.org/2000/svg"
-           preserveAspectRatio="none">
-      </svg>
+    <!-- HTML-оверлей: кнопки этапов -->
+    <div class="board-overlay" id="board-overlay">
 
-      <!-- Декоративные элементы -->
-      <div class="deco" style="left:15%;top:34%">🌸</div>
-      <div class="deco" style="left:50%;top:34%">🌿</div>
-      <div class="deco" style="left:85%;top:34%">🌸</div>
-      <div class="deco" style="left:15%;top:67%">🌿</div>
-      <div class="deco" style="left:50%;top:67%">🌸</div>
-      <div class="deco" style="left:85%;top:67%">🌿</div>
-
-      <!-- Клетки поля -->
-      <div id="cells-container"></div>
-
-      <!-- Фишка игрока -->
-      <div id="player-token" class="player-token">
-        <div id="player-token-sprite"></div>
+      <!-- Метка СТАРТ + персонаж -->
+      <div class="start-marker" style="left:37.1%;top:17.1%">
+        <canvas id="cv-token" width="36" height="54" class="token-canvas"></canvas>
+        <div class="start-label">СТАРТ</div>
       </div>
 
+      <!-- Этап 1 -->
+      <button class="stage-btn s-active" id="sbtn-1" onclick="goToStage(1)"
+              style="left:75.8%;top:40%">
+        <div class="sbtn-num">1</div>
+        <div class="sbtn-ico">⭐</div>
+        <div class="sbtn-txt">Загадка</div>
+      </button>
+
+      <!-- Этап 2 -->
+      <button class="stage-btn s-locked" id="sbtn-2" onclick="goToStage(2)"
+              style="left:56.5%;top:57.1%">
+        <div class="sbtn-num">2</div>
+        <div class="sbtn-ico">🍽</div>
+        <div class="sbtn-txt">Ресторан</div>
+      </button>
+
+      <!-- Этап 3 -->
+      <button class="stage-btn s-locked" id="sbtn-3" onclick="goToStage(3)"
+              style="left:30.6%;top:34.3%">
+        <div class="sbtn-num">3</div>
+        <div class="sbtn-ico">❓</div>
+        <div class="sbtn-txt">Этап 3</div>
+      </button>
+
+      <!-- Этап 4 -->
+      <button class="stage-btn s-locked" id="sbtn-4" onclick="goToStage(4)"
+              style="left:17.7%;top:45.7%">
+        <div class="sbtn-num">4</div>
+        <div class="sbtn-ico">🏆</div>
+        <div class="sbtn-txt">Финиш</div>
+      </button>
     </div>
   </div>
-
-  <!-- Панель кубика -->
-  <div class="dice-panel">
-    <div class="dice" id="dice">
-      <span id="dice-face">?</span>
-    </div>
-    <p id="dice-msg" class="dice-msg">Брось кубик!</p>
-    <button id="btn-roll" class="pixel-btn" onclick="rollDice()">
-      🎲 Бросить
-    </button>
-  </div>
-
 </div>
 
-<!-- ═══════════════════════════════════
-     ОВЕРЛЕЙ: ЭТАП 1 — Вопрос + Бабочки
-     ═══════════════════════════════════ -->
+<!-- ══════════ ОВЕРЛЕЙ: ЭТАП 1 — Загадка + Бабочки ══════════ -->
 <div id="overlay-s1" class="overlay hidden">
   <div class="modal-box">
 
-    <!-- Фаза A: Вопрос -->
-    <div id="s1-question" class="modal-phase">
-      <div class="modal-star">⭐ Этап 1 ⭐</div>
-      <p class="modal-text">Мама — это...</p>
-      <div class="answers">
-        <button class="answer-btn" onclick="pickAnswer(this)">Самый лучший человек в мире! ❤️</button>
-        <button class="answer-btn" onclick="pickAnswer(this)">Моя любимая мама! 🌸</button>
-        <button class="answer-btn" onclick="pickAnswer(this)">Самая красивая! 💫</button>
+    <!-- Фаза А: загадка -->
+    <div id="phase-riddle" class="modal-phase">
+      <div class="modal-hd">⭐ Этап 1 — Загадка ⭐</div>
+      <p class="riddle-text">
+        «Найди меня там,<br>где прячут ключи<br>в дешёвых детективах»
+      </p>
+      <div class="riddle-row">
+        <input id="riddle-input" class="pixel-input" type="text"
+               placeholder="Твой ответ..." maxlength="20"
+               onkeydown="if(event.key==='Enter')checkRiddle()"/>
+        <button class="pixel-btn sm" onclick="checkRiddle()">▶</button>
       </div>
+      <p id="riddle-fb" class="riddle-fb"></p>
     </div>
 
-    <!-- Фаза B: Ловим бабочек -->
-    <div id="s1-butterflies" class="modal-phase hidden">
-      <div class="modal-star">🦋 Лови бабочек! 🦋</div>
-      <div class="butterfly-hud">
-        Поймано: <span id="caught">0</span>&nbsp;/&nbsp;<span id="btotal">8</span>
+    <!-- Фаза B: ловим бабочек -->
+    <div id="phase-catch" class="modal-phase hidden">
+      <div class="modal-hd">🦋 Лови бабочек! 🦋</div>
+      <p class="catch-hint">Нажимай только на бабочек — остальное не трогай!</p>
+      <div class="catch-hud">
+        🦋 <span id="caught-n">0</span> / <span id="total-n">8</span>
       </div>
-      <div class="butterfly-field" id="bfield"></div>
-      <div class="butterfly-win hidden" id="bwin">
+      <div class="catch-field" id="catch-field">
+        <!-- объекты генерируются в JS -->
+        <canvas id="cv-daughter" width="48" height="66"
+                class="daughter-sprite"></canvas>
+      </div>
+      <div class="catch-win hidden" id="catch-win">
         <p>🎉 Все пойманы! Молодец! 🎉</p>
-        <button class="pixel-btn small-btn" onclick="finishStage1()">Дальше! ▶</button>
+        <button class="pixel-btn" onclick="completeS1()">Дальше! ▶</button>
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- ═══════════════════════════════════
-     ОВЕРЛЕЙ: ЭТАП 2 (заглушка)
-     ═══════════════════════════════════ -->
+<!-- ══════════ ОВЕРЛЕЙ: ЭТАП 2 — Ресторан ══════════ -->
 <div id="overlay-s2" class="overlay hidden">
+  <div class="modal-box rest-box">
+    <div class="modal-hd">🍽 Этап 2 — Ужин ждёт! 🍽</div>
+    <p class="rest-q">Куда едем сегодня вечером?</p>
+
+    <div class="fork-svg-wrap">
+      <svg viewBox="0 0 300 50" class="fork-svg">
+        <line x1="150" y1="0" x2="150" y2="25" stroke="#C8A84B" stroke-width="5"
+              stroke-dasharray="8 5" stroke-linecap="round"/>
+        <line x1="150" y1="25" x2="38"  y2="50" stroke="#C8A84B" stroke-width="5"
+              stroke-dasharray="8 5" stroke-linecap="round"/>
+        <line x1="150" y1="25" x2="150" y2="50" stroke="#C8A84B" stroke-width="5"
+              stroke-dasharray="8 5" stroke-linecap="round"/>
+        <line x1="150" y1="25" x2="262" y2="50" stroke="#C8A84B" stroke-width="5"
+              stroke-dasharray="8 5" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="rest-row" id="rest-row">
+      <div class="rest-card" onclick="pickRest(this,'Сушилка')">
+        <div class="rest-icon">🍜</div>
+        <div class="rest-name">Сушилка</div>
+        <div class="rest-sub">Азиатская кухня</div>
+      </div>
+      <div class="rest-card" onclick="pickRest(this,'Первый сырный бар')">
+        <div class="rest-icon">🧀</div>
+        <div class="rest-name">Первый<br>сырный бар</div>
+        <div class="rest-sub">Фондю & Сыр</div>
+      </div>
+      <div class="rest-card" onclick="pickRest(this,'Мама Рома')">
+        <div class="rest-icon">🍕</div>
+        <div class="rest-name">Мама Рома</div>
+        <div class="rest-sub">Итальянская</div>
+      </div>
+    </div>
+
+    <div class="rest-chosen hidden" id="rest-chosen">
+      <p>Отличный выбор! ❤️<br><b id="chosen-name"></b></p>
+      <button class="pixel-btn" onclick="completeS2()">Вперёд! ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ОВЕРЛЕЙ: ЭТАП 3 (заглушка) ══════════ -->
+<div id="overlay-s3" class="overlay hidden">
   <div class="modal-box">
     <div class="modal-phase">
-      <div class="modal-star">⭐ Этап 2 ⭐</div>
-      <p class="modal-text" id="s2-text">Здесь будет<br>твой сюрприз! 🎁</p>
-      <button class="pixel-btn" onclick="finishStage2()">Продолжить ▶</button>
+      <div class="modal-hd">⭐ Этап 3 ⭐</div>
+      <p class="modal-txt">Здесь скоро появится<br>новое задание! 🎁</p>
+      <button class="pixel-btn" onclick="completeS3()">Продолжить ▶</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════
-     ОВЕРЛЕЙ: ФИНИШ / ПОБЕДА
-     ═══════════════════════════════════ -->
+<!-- ══════════ ОВЕРЛЕЙ: ФИНИШ ══════════ -->
 <div id="overlay-win" class="overlay hidden">
-  <div class="modal-box win-modal">
+  <div class="modal-box win-box">
     <div class="win-hearts">💕 💕 💕</div>
-    <h2 class="win-title">Ты лучшая!</h2>
-    <div id="win-sprite-wrap" class="win-sprite"></div>
-    <p class="win-text">Ты прошла все испытания!<br>С любовью ❤️</p>
-    <button class="pixel-btn" onclick="resetGame()">Играть снова?</button>
+    <h2 class="win-title">Ты прошла!</h2>
+    <canvas id="cv-win" width="80" height="120" class="win-sprite"></canvas>
+    <p class="win-txt">Ты справилась со всеми испытаниями!<br>С любовью ❤️</p>
+    <button class="pixel-btn" onclick="resetGame()">Играть снова 🔄</button>
   </div>
 </div>
 
