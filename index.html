@@ -2,14 +2,14 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>✨ Приключение принцессы</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- ═══ Постоянная панель персонажей (видна поверх любого оверлея) ═══ -->
+<!-- Постоянная панель персонажей (поверх всего) -->
 <div class="char-panel hidden" id="char-panel">
   <img class="cp-wife"   id="cp-wife"   src="" alt="">
   <img class="cp-daught" id="cp-daught" src="" alt="">
@@ -18,72 +18,72 @@
 <!-- ══════ ЭКРАН 1: ВЫБОР ЖЕНЫ ══════ -->
 <div id="screen-wife" class="screen active">
   <div id="stars-bg" class="stars-bg"></div>
-  <div class="select-wrap">
-    <h1 class="game-title"><span>✨ Кто ты</span><span>сегодня? ✨</span></h1>
-    <p class="select-hint">Выбери свой образ!</p>
-    <div class="char-grid">
+  <div class="select-scroll">
+    <div class="select-wrap">
+      <h1 class="game-title"><span>✨ Кто ты</span><span>сегодня? ✨</span></h1>
+      <p class="select-hint">Выбери свой образ!</p>
+      <div class="char-grid">
 
-      <div class="char-card" data-id="1" onclick="selectWife(1)">
-        <img class="char-img" src="wife-повседневная.png" alt="Повседневная">
-        <div class="char-name">Повседневная</div>
-        <div class="char-desc">Уютная & лёгкая</div>
+        <div class="char-card" data-id="1" onclick="selectWife(1)">
+          <img class="char-img" src="wife-повседневная.png" alt="">
+          <div class="char-name">Повседневная</div>
+          <div class="char-desc">Уютная & лёгкая</div>
+        </div>
+        <div class="char-card" data-id="2" onclick="selectWife(2)">
+          <img class="char-img" src="wife-путешественница.png" alt="">
+          <div class="char-name">Путешественница</div>
+          <div class="char-desc">Готова к приключениям</div>
+        </div>
+        <div class="char-card" data-id="3" onclick="selectWife(3)">
+          <img class="char-img" src="wife-элегантная.png" alt="">
+          <div class="char-name">Элегантная</div>
+          <div class="char-desc">Стильная & загадочная</div>
+        </div>
+
       </div>
-
-      <div class="char-card" data-id="2" onclick="selectWife(2)">
-        <img class="char-img" src="wife-путешественница.png" alt="Путешественница">
-        <div class="char-name">Путешественница</div>
-        <div class="char-desc">Готова к приключениям</div>
-      </div>
-
-      <div class="char-card" data-id="3" onclick="selectWife(3)">
-        <img class="char-img" src="wife-элегантная.png" alt="Элегантная">
-        <div class="char-name">Элегантная</div>
-        <div class="char-desc">Стильная & загадочная</div>
-      </div>
-
-    </div>
-    <button id="btn-wife-next" class="pixel-btn" onclick="goToDaughter()" disabled>
-      Далее ▶
-    </button>
-  </div>
-</div>
-
-<!-- ══════ ЭКРАН 2: ВЫБОР НАПАРНИЦЫ ══════ -->
-<div id="screen-daughter" class="screen">
-  <div class="select-wrap">
-    <h1 class="game-title"><span>🌟 Выбери</span><span>напарницу 🌟</span></h1>
-    <p class="select-hint">Она поможет тебе в мини-играх!</p>
-    <div class="char-grid">
-
-      <div class="char-card d-card" data-id="1" onclick="selectDaughter(1)">
-        <img class="char-img" src="daughter-солнышко.png" alt="Солнышко">
-        <div class="char-name">Солнышко</div>
-        <div class="char-desc">Озорная & весёлая</div>
-      </div>
-
-      <div class="char-card d-card" data-id="2" onclick="selectDaughter(2)">
-        <img class="char-img" src="daughter-непоседа.png" alt="Непоседа">
-        <div class="char-name">Непоседа</div>
-        <div class="char-desc">Активная & смелая</div>
-      </div>
-
-      <div class="char-card d-card" data-id="3" onclick="selectDaughter(3)">
-        <img class="char-img" src="daughter-уютная.png" alt="Уютная">
-        <div class="char-name">Уютная</div>
-        <div class="char-desc">Добрая & мечтательная</div>
-      </div>
-
-    </div>
-    <div class="nav-row">
-      <button class="pixel-btn grey" onclick="backToWife()">◀ Назад</button>
-      <button id="btn-start" class="pixel-btn" onclick="startGame()" disabled>
-        ▶ Начать!
+      <button id="btn-wife-next" class="pixel-btn" onclick="goToDaughter()" disabled>
+        Далее ▶
       </button>
     </div>
   </div>
 </div>
 
-<!-- ══════ ЭКРАН 3: ИГРОВОЕ ПОЛЕ ══════ -->
+<!-- ══════ ЭКРАН 2: ВЫБОР НАПАРНИЦЫ ══════ -->
+<div id="screen-daughter" class="screen">
+  <div class="select-scroll">
+    <div class="select-wrap">
+      <h1 class="game-title"><span>🌟 Выбери</span><span>напарницу 🌟</span></h1>
+      <p class="select-hint">Она поможет в мини-играх!</p>
+      <div class="char-grid">
+
+        <div class="char-card d-card" data-id="1" onclick="selectDaughter(1)">
+          <img class="char-img" src="daughter-солнышко.png" alt="">
+          <div class="char-name">Солнышко</div>
+          <div class="char-desc">Озорная & весёлая</div>
+        </div>
+        <div class="char-card d-card" data-id="2" onclick="selectDaughter(2)">
+          <img class="char-img" src="daughter-непоседа.png" alt="">
+          <div class="char-name">Непоседа</div>
+          <div class="char-desc">Активная & смелая</div>
+        </div>
+        <div class="char-card d-card" data-id="3" onclick="selectDaughter(3)">
+          <img class="char-img" src="daughter-уютная.png" alt="">
+          <div class="char-name">Уютная</div>
+          <div class="char-desc">Добрая & мечтательная</div>
+        </div>
+
+      </div>
+      <div class="nav-row">
+        <button class="pixel-btn grey" onclick="backToWife()">◀ Назад</button>
+        <button id="btn-start" class="pixel-btn" onclick="startGame()" disabled>
+          ▶ Начать!
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ ЭКРАН 3: ИГРОВОЕ ПОЛЕ (вертикальное) ══════ -->
 <div id="screen-board" class="screen">
 
   <div class="board-header">
@@ -91,46 +91,51 @@
     <span id="hdr-name">—</span>
     <img class="hdr-daught" id="hdr-daught" src="" alt="">
     <span class="hdr-sep">|</span>
-    <span>Этапов: <span id="stages-done">0</span>/4</span>
+    <span>Этапы: <span id="stages-done">0</span>/4</span>
   </div>
 
-  <div class="board-wrapper">
-    <canvas id="board-canvas" width="620" height="350"></canvas>
+  <!-- canvas + оверлей в одном контейнере -->
+  <div class="board-canvas-wrap">
+    <canvas id="board-canvas" width="360" height="520"></canvas>
 
-    <div class="board-overlay">
+    <div class="board-overlay" id="board-overlay">
 
-      <!-- Пара персонажей на поле (двигается по этапам) -->
+      <!-- Пара персонажей (двигается по этапам) -->
       <div class="board-chars" id="board-chars">
         <img class="bc-wife"   id="bc-wife"   src="" alt="">
         <img class="bc-daught" id="bc-daught" src="" alt="">
       </div>
 
+      <!-- Метка СТАРТ -->
+      <div class="start-label" style="left:50%;top:4.2%">СТАРТ</div>
+
       <!-- Кнопки этапов -->
       <button class="stage-btn s-active" id="sbtn-1" onclick="goToStage(1)"
-              style="left:75.8%;top:40%">
-        <div class="sbtn-num">1</div><div class="sbtn-ico">⭐</div><div class="sbtn-txt">Загадка</div>
+              style="left:68.9%;top:24.6%">
+        <div class="sbtn-ico">⭐</div><div class="sbtn-txt">Загадка</div>
       </button>
       <button class="stage-btn s-locked" id="sbtn-2" onclick="goToStage(2)"
-              style="left:56.5%;top:57.1%">
-        <div class="sbtn-num">2</div><div class="sbtn-ico">🍽</div><div class="sbtn-txt">Ресторан</div>
+              style="left:28.3%;top:50.4%">
+        <div class="sbtn-ico">🍽</div><div class="sbtn-txt">Ресторан</div>
       </button>
       <button class="stage-btn s-locked" id="sbtn-3" onclick="goToStage(3)"
-              style="left:30.6%;top:34.3%">
-        <div class="sbtn-num">3</div><div class="sbtn-ico">❓</div><div class="sbtn-txt">Этап 3</div>
+              style="left:70%;top:76.5%">
+        <div class="sbtn-ico">❓</div><div class="sbtn-txt">Этап 3</div>
       </button>
       <button class="stage-btn s-locked" id="sbtn-4" onclick="goToStage(4)"
-              style="left:17.7%;top:45.7%">
-        <div class="sbtn-num">4</div><div class="sbtn-ico">🏆</div><div class="sbtn-txt">Финиш</div>
+              style="left:30%;top:93.3%">
+        <div class="sbtn-ico">🏆</div><div class="sbtn-txt">Финиш</div>
       </button>
 
-    </div><!-- /board-overlay -->
-  </div><!-- /board-wrapper -->
+    </div>
+  </div>
+
 </div>
 
-<!-- ══════ ОВЕРЛЕЙ: ЭТАП 1 — Загадка + Бабочки ══════ -->
+<!-- ══════ ОВЕРЛЕЙ: ЭТАП 1 ══════ -->
 <div id="overlay-s1" class="overlay hidden">
   <div class="modal-box">
-
+    <!-- Загадка -->
     <div id="phase-riddle" class="modal-phase">
       <div class="modal-hd">⭐ Этап 1 — Загадка ⭐</div>
       <p class="riddle-text">«Найди меня там,<br>где прячут ключи<br>в дешёвых детективах»</p>
@@ -142,13 +147,12 @@
       </div>
       <p id="riddle-fb" class="riddle-fb"></p>
     </div>
-
+    <!-- Бабочки -->
     <div id="phase-catch" class="modal-phase hidden">
       <div class="modal-hd">🦋 Лови бабочек! 🦋</div>
       <p class="catch-hint">Нажимай только на 🦋 — остальное не трогай!</p>
       <div class="catch-hud">🦋 <span id="caught-n">0</span> / <span id="total-n">8</span></div>
       <div class="catch-field" id="catch-field">
-        <!-- Напарница в углу поля -->
         <img class="field-daught" id="field-daught" src="" alt="">
       </div>
       <div class="catch-win hidden" id="catch-win">
@@ -156,14 +160,13 @@
         <button class="pixel-btn" onclick="completeS1()">Дальше! ▶</button>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ══════ ОВЕРЛЕЙ: ЭТАП 2 — Ресторан ══════ -->
+<!-- ══════ ОВЕРЛЕЙ: ЭТАП 2 ══════ -->
 <div id="overlay-s2" class="overlay hidden">
   <div class="modal-box rest-box">
-    <div class="modal-hd">🍽 Этап 2 — Ужин ждёт! 🍽</div>
+    <div class="modal-hd">🍽 Этап 2 — Ужин ждёт!</div>
     <p class="rest-q">Куда едем сегодня вечером?</p>
     <div class="fork-svg-wrap">
       <svg viewBox="0 0 300 50" class="fork-svg">
@@ -197,7 +200,7 @@
   </div>
 </div>
 
-<!-- ══════ ОВЕРЛЕЙ: ЭТАП 3 (заглушка) ══════ -->
+<!-- ══════ ОВЕРЛЕЙ: ЭТАП 3 ══════ -->
 <div id="overlay-s3" class="overlay hidden">
   <div class="modal-box">
     <div class="modal-phase">
