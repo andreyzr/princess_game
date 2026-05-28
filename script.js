@@ -5,8 +5,8 @@
 /* ─── СОСТОЯНИЕ ─── */
 const G = {
   wife: null, daughter: null,
-  /* 0=этап1(вопрос), 1=этап2(парк+бабочки), 2=этап3(кафе), 3=этап4 */
-  stagesDone: [false, false, false, false],
+  /* 0=десерты, 1=вопрос, 2=парк, 3=кафе, 4=финал */
+  stagesDone: [false, false, false, false, false],
   chosenPark: null,          /* 'left' | 'right' */
   forksRevealed: false,      /* парки видны после этапа 1 */
   butterfliesCaught: 0,
@@ -18,7 +18,7 @@ const WIFE_SRC   = { 1:'wife-повседневная.png', 2:'wife-путеше
 const WIFE_NAMES = { 1:'Повседневная', 2:'Путешественница', 3:'Элегантная' };
 const DAUGHT_SRC = { 1:'daughter-солнышко.png', 2:'daughter-непоседа.png', 3:'daughter-уютная.png' };
 
-const PARK_NAMES = { left:'Парк Победы', right:'Александровский парк' };
+const PARK_NAMES = { left:'Александровский парк', right:'Парк Победы' };
 
 /* ══════════════════════════════════════════
    ПОЛЕ — координаты (canvas 360×520, TILE_W=64, TILE_H=32)
@@ -257,8 +257,11 @@ function updateButtons() {
   const sd = G.stagesDone;
   const fr = G.forksRevealed;
 
+  // Этап 0
+  el('sbtn-0').className = 'stage-btn ' + (sd[0] ? 's-done' : 's-active');
+
   // Этап 1
-  el('sbtn-1').className = 'stage-btn ' + (sd[0] ? 's-done' : 's-active');
+  el('sbtn-1').className = 'stage-btn ' + (!sd[0] ? 's-locked' : sd[1] ? 's-done' : 's-active');
 
   // Развилка (парки)
   ['fork-l','fork-r'].forEach((id,i) => {
@@ -268,7 +271,7 @@ function updateButtons() {
       btn.className = 'stage-btn fork-btn s-locked';
       el(`fork-${i===0?'l':'r'}-ico`).textContent = '❓';
       el(`fork-${i===0?'l':'r'}-txt`).textContent = 'Парк';
-    } else if (sd[1]) {
+    } else if (sd[2]) {
       btn.className = 'stage-btn fork-btn s-done';
       el(`fork-${i===0?'l':'r'}-ico`).textContent = '🌳';
       el(`fork-${i===0?'l':'r'}-txt`).textContent = PARK_NAMES[side].split(' ')[0];
@@ -280,19 +283,20 @@ function updateButtons() {
   });
 
   // Этап 3 (кафе)
-  el('sbtn-3').className = 'stage-btn ' + (!sd[1] ? 's-locked' : sd[2] ? 's-done' : 's-active');
+  el('sbtn-3').className = 'stage-btn ' + (!sd[2] ? 's-locked' : sd[3] ? 's-done' : 's-active');
 
   // Этап 4
-  el('sbtn-4').className = 'stage-btn ' + (!sd[2] ? 's-locked' : sd[3] ? 's-done' : 's-active');
+  el('sbtn-4').className = 'stage-btn ' + (!sd[3] ? 's-locked' : sd[4] ? 's-done' : 's-active');
 
   el('stages-done').textContent = sd.filter(Boolean).length;
   drawBoard();
 }
 
 function goToStage(n) {
-  if (n===1 && !G.stagesDone[0]) { openS1(); return; }
-  if (n===3 && G.stagesDone[1] && !G.stagesDone[2]) { openS3(); return; }
-  if (n===4 && G.stagesDone[2] && !G.stagesDone[3]) { openS4(); return; }
+  if (n===0 && !G.stagesDone[0]) { openS0(); return; }
+  if (n===1 && G.stagesDone[0] && !G.stagesDone[1]) { openS1(); return; }
+  if (n===3 && G.stagesDone[2] && !G.stagesDone[3]) { openS3(); return; }
+  if (n===4 && G.stagesDone[3] && !G.stagesDone[4]) { openS4(); return; }
   // Уже пройден или заблокирован — мигнуть
   const btn = el(`sbtn-${n}`);
   if (!btn) return;
@@ -368,15 +372,134 @@ function startGame() {
   const panel = el('char-panel');
   panel.classList.remove('hidden'); panel.classList.add('visible');
 
-  G.stagesDone    = [false,false,false,false];
+  G.stagesDone    = [false,false,false,false,false];
   G.chosenPark    = null;
   G.forksRevealed = false;
+
+  el('wc-wife').src = wSrc;
+  el('wc-daught').src = dSrc;
+  el('anniv-wife').src = wSrc;
+  el('anniv-daught').src = dSrc;
 
   show('screen-board');
   requestAnimationFrame(() => {
     drawBoard(); syncOverlay(); moveChars('start'); updateButtons();
+    el('overlay-welcome').classList.remove('hidden');
   });
 }
+
+
+/* ══════════════════════════════════════════
+   ЭТАП 0 — ДЕСЕРТЫ
+   ══════════════════════════════════════════ */
+let selectedDesserts = new Set();
+let selectedPiece = null;
+let matchedCakes = 0;
+
+function closeWelcome() {
+  el('overlay-welcome').classList.add('hidden');
+}
+
+function openS0() {
+  selectedDesserts.clear();
+  matchedCakes = 0;
+  selectedPiece = null;
+
+  document.querySelectorAll('.dessert-card').forEach(card => {
+    card.classList.remove('selected');
+  });
+
+  el('btn-s0-next').disabled = true;
+  el('s0-select').classList.remove('hidden');
+  el('s0-match').classList.add('hidden');
+  el('match-win').classList.add('hidden');
+  el('overlay-s0').classList.remove('hidden');
+}
+
+function toggleDessert(card) {
+  const id = card.dataset.d;
+
+  if (selectedDesserts.has(id)) {
+    selectedDesserts.delete(id);
+    card.classList.remove('selected');
+  } else {
+    selectedDesserts.add(id);
+    card.classList.add('selected');
+  }
+
+  el('btn-s0-next').disabled = selectedDesserts.size === 0;
+}
+
+function showMatchPhase() {
+  el('s0-select').classList.add('hidden');
+  el('s0-match').classList.remove('hidden');
+
+  const cakes = [
+    { id: 1, icon: '🍰', name: 'Чизкейк' },
+    { id: 2, icon: '🎂', name: 'Сникерс' },
+    { id: 3, icon: '🍮', name: 'Красный бархат' },
+    { id: 4, icon: '🧁', name: 'Капкейки' },
+  ];
+
+  const shuffled = [...cakes].sort(() => Math.random() - 0.5);
+  const layout = el('match-layout');
+
+  layout.innerHTML = `
+    <div class="match-left">
+      ${cakes.map(c => `
+        <div class="cake-slot" data-id="${c.id}" onclick="placePiece(${c.id})">
+          <div class="cake-big">${c.icon}</div>
+          <div class="cake-miss">◻</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="match-right">
+      ${shuffled.map(c => `
+        <div class="cake-piece" data-id="${c.id}" onclick="selectPiece(this, ${c.id})">
+          ${c.icon}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function selectPiece(node, id) {
+  document.querySelectorAll('.cake-piece').forEach(p => p.classList.remove('active'));
+  node.classList.add('active');
+  selectedPiece = id;
+}
+
+function placePiece(id) {
+  if (!selectedPiece) return;
+
+  const slot = document.querySelector(`.cake-slot[data-id="${id}"]`);
+
+  if (selectedPiece === id) {
+    slot.classList.add('done');
+    slot.querySelector('.cake-miss').textContent = '✨';
+
+    const piece = document.querySelector(`.cake-piece[data-id="${id}"]`);
+    if (piece) piece.remove();
+
+    matchedCakes++;
+    selectedPiece = null;
+
+    if (matchedCakes >= 4) {
+      el('match-win').classList.remove('hidden');
+    }
+  } else {
+    slot.classList.add('shake');
+    setTimeout(() => slot.classList.remove('shake'), 400);
+  }
+}
+
+function completeS0() {
+  G.stagesDone[0] = true;
+  el('overlay-s0').classList.add('hidden');
+  moveChars('s1');
+  updateButtons();
+}
+
 
 /* ══════════════════════════════════════════
    ЭТАП 1 — ДВА ПАРКА
@@ -404,7 +527,7 @@ function checkParks() {
     el('park-1').disabled = el('park-2').disabled = true;
     setTimeout(() => {
       el('overlay-s1').classList.add('hidden');
-      G.stagesDone[0]    = true;
+      G.stagesDone[1]    = true;
       G.forksRevealed    = true;
       moveChars('s1');
       updateButtons();
@@ -492,7 +615,7 @@ function showParkReady() {
 }
 
 function completeFork() {
-  G.stagesDone[1] = true;
+  G.stagesDone[4] = true;
   el('overlay-fork').classList.add('hidden');
   const charStage = G.chosenPark === 'left' ? 'fork_l' : 'fork_r';
   moveChars(charStage);
@@ -518,7 +641,7 @@ function pickRest(card, name) {
   el('rest-chosen').classList.remove('hidden');
 }
 function completeS3() {
-  G.stagesDone[2] = true;
+  G.stagesDone[4] = true;
   el('overlay-s3').classList.add('hidden');
   moveChars('s3');
   updateButtons();
@@ -529,7 +652,7 @@ function completeS3() {
    ══════════════════════════════════════════ */
 function openS4() { el('overlay-s4').classList.remove('hidden'); }
 function completeS4() {
-  G.stagesDone[3] = true;
+  G.stagesDone[4] = true;
   el('overlay-s4').classList.add('hidden');
   moveChars('s4');
   updateButtons();
@@ -541,7 +664,7 @@ function completeS4() {
    ══════════════════════════════════════════ */
 function resetGame() {
   G.wife = null; G.daughter = null;
-  G.stagesDone = [false,false,false,false];
+  G.stagesDone = [false,false,false,false,false];
   G.chosenPark = null; G.forksRevealed = false;
   G.butterfliesCaught = 0;
 

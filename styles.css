@@ -353,3 +353,125 @@ body {
 @media (orientation: landscape) and (max-height: 500px) {
   .rotate-notice { display: flex; }
 }
+
+
+/* ══════════════════════════════════════════
+   ДЕСЕРТЫ И ПАЗЛ
+   ══════════════════════════════════════════ */
+.welcome-chars,
+.anniv-chars {
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:12px;
+}
+
+.wc-wife,.anniv-wife { height:140px; }
+.wc-daught,.anniv-daught { height:110px; }
+
+.dessert-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  width:100%;
+}
+
+.dessert-card {
+  background:var(--warm);
+  border:4px solid var(--olive);
+  padding:14px 10px;
+  min-height:120px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  cursor:pointer;
+}
+
+.dessert-card.selected {
+  border-color:var(--gold);
+  transform:scale(.96);
+  background:#fff3c2;
+}
+
+.d-ico {
+  font-size:42px;
+}
+
+.d-name {
+  font-size:7px;
+  line-height:1.8;
+  text-align:center;
+}
+
+.match-layout {
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  width:100%;
+}
+
+.match-left,
+.match-right {
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  flex:1;
+}
+
+.cake-slot,
+.cake-piece {
+  background:var(--warm);
+  border:4px solid var(--olive);
+  min-height:90px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+.cake-slot.done {
+  border-color:#7CC85A;
+}
+
+.cake-big,
+.cake-piece {
+  font-size:52px;
+}
+
+.cake-piece {
+  cursor:pointer;
+}
+
+.cake-piece.active {
+  border-color:var(--gold);
+  transform:scale(1.05);
+}
+
+.cake-miss {
+  position:absolute;
+  right:8px;
+  bottom:6px;
+  font-size:22px;
+  color:#e74c3c;
+}
+
+.match-win {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+}
+
+.fork-field {
+  height:320px !important;
+}
+
+.fly-obj {
+  font-size:52px !important;
+}
+
+.field-daught {
+  height:140px !important;
+}
