@@ -387,14 +387,20 @@ function openS0() {
 
 function toggleDessert(card) {
   const id = parseInt(card.dataset.d);
-  if (G.selectedDesserts.has(id)) {
-    G.selectedDesserts.delete(id);
-    card.classList.remove('chosen');
-  } else {
-    G.selectedDesserts.add(id);
-    card.classList.add('chosen');
-  }
-  el('btn-s0-next').disabled = G.selectedDesserts.size < 4;
+
+  // очищаем прошлый выбор
+  G.selectedDesserts.clear();
+
+  document.querySelectorAll('.dessert-card').forEach(c => {
+    c.classList.remove('chosen');
+  });
+
+  // выбираем только текущий торт
+  G.selectedDesserts.add(id);
+  card.classList.add('chosen');
+
+  // кнопка активна если выбран 1 торт
+  el('btn-s0-next').disabled = G.selectedDesserts.size < 1;
 }
 
 function showMatchPhase() {
